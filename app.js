@@ -6,16 +6,146 @@ const selector = document.querySelector("#selector");
 const list = Array(50).fill(null);
 const HEIGHT_MULTIPLIER = 3;
 const DELAY = 100;
+let isActive = false;
 
 document.addEventListener("DOMContentLoaded", renderer);
-sortbtn.addEventListener("click", () => {
-  if (selector.value === "bubble") {
-    bubbleSort();
-  } else {
-    console.log("Merge sort in action..");
+sortbtn.addEventListener("click", async () => {
+  if (!isActive) {
+    if (selector.value === "bubble") {
+      bubbleSort();
+    } else {
+      isActive = true;
+      console.log("Merge sort in action..");
+      await mergeSort().then(() => {
+        isActive = false;
+      });
+    }
   }
 });
 resetbtn.addEventListener("click", renderer);
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function mergeSort() {
+  const nodeList = document.querySelectorAll(".array");
+  const bars = Array.from(nodeList);
+  await sorting(bars, 0, bars.length - 1).then((res) => {
+    console.log(bars.map((bar) => bar.dataset.height));
+    greenHighlight();
+  });
+
+  // for (let bar of data) {
+  //   console.log("sorted");
+  //   container.appendChild(bar);
+  // }
+
+  /** 
+   @param arr: int[]
+   @param bars:int[]
+*/
+  // async function sorting(arr) {
+  //   if (arr.length <= 1) {
+  //     return arr;
+  //   }
+
+  //   const mid = Math.floor(arr.length / 2);
+  //   const left = await sorting(arr.slice(0, mid));
+  //   const right = await sorting(arr.slice(mid));
+
+  //   const result = await merge(left, right);
+  //   return result;
+  // }
+
+  // async function merge(left, right) {
+  //   let result = [];
+  //   let leftIndex = 0;
+  //   let rightIndex = 0;
+  //   let finished = false;
+
+  //   while (leftIndex < left.length && rightIndex < right.length) {
+  //     await sleep(DELAY / 3);
+  //     if (+left[leftIndex].dataset.height < +right[rightIndex].dataset.height) {
+  //       result.push(left[leftIndex]);
+  //       left[leftIndex].style.backgroundColor = "red";
+  //       right[rightIndex].style.backgroundColor = "red";
+  //       await sleep(DELAY / 2);
+  //       left[leftIndex].style.backgroundColor = "black";
+  //       right[rightIndex].style.backgroundColor = "black";
+  //       leftIndex++;
+  //     } else {
+  //       result.push(right[rightIndex]);
+  //       rightIndex++;
+  //     }
+  //   }
+
+  //   return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  // }
+
+  async function sorting(arr, l, r) {
+    if (l < r) {
+      const m = Math.floor(l + (r - l) / 2);
+      await sorting(arr, l, m);
+      await sorting(arr, m + 1, r);
+
+      await merge(arr, l, m, r);
+    }
+  }
+
+  async function merge(arr, l, m, r) {
+    const n1 = m - l + 1;
+    const n2 = r - m;
+    const leftArray = Array(n1).fill(null);
+    const rightArray = Array(n2).fill(null);
+
+    for (let i = 0; i < leftArray.length; i++) {
+      leftArray[i] = arr[l + i];
+    }
+    for (let j = 0; j < rightArray.length; j++) {
+      rightArray[j] = arr[m + 1 + j]; // We add one because the mid we already have in the left subarray
+    }
+
+    let i = 0;
+    let j = 0;
+    let k = l;
+    while (i < n1 && j < n2) {
+      await sleep(DELAY / 3);
+      if (+leftArray[i].dataset.height <= +rightArray[j].dataset.height) {
+        arr[k] = leftArray[i];
+        i++;
+      } else {
+        arr[k] = rightArray[j];
+        j++;
+      }
+
+      arr[k].style.backgroundColor = "red";
+      k++;
+    }
+
+    await sleep(DELAY / 3);
+    while (i < n1) {
+      arr[k] = leftArray[i];
+      arr[k].style.backgroundColor = "red";
+      i++;
+      k++;
+    }
+
+    await sleep(DELAY / 3);
+    while (j < n2) {
+      arr[k] = rightArray[j];
+      arr[k].style.backgroundColor = "red";
+      j++;
+      k++;
+    }
+
+    await sleep(DELAY / 3);
+    for (let bar of arr) {
+      bar.style.backgroundColor = "black";
+      container.appendChild(bar);
+    }
+  }
+}
 
 function bubbleSort() {
   console.log("Bubble Sort");
@@ -81,6 +211,7 @@ function greenHighlight() {
 }
 
 function renderer() {
+  isActive = false;
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
@@ -91,6 +222,7 @@ function renderer() {
     const width = container.offsetWidth / list.length;
     const div = document.createElement("div");
     div.classList.add("array");
+    div.dataset.height = i;
     div.style.height = `${i * HEIGHT_MULTIPLIER}px`;
     div.style.width = `${width}px`;
     div.style.backgroundColor = "black";
