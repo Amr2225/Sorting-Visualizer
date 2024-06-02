@@ -11,14 +11,12 @@ let isActive = false;
 document.addEventListener("DOMContentLoaded", renderer);
 sortbtn.addEventListener("click", async () => {
   if (!isActive) {
+    isActive = true;
     if (selector.value === "bubble") {
       bubbleSort();
     } else {
-      isActive = true;
       console.log("Merge sort in action..");
-      await mergeSort().then(() => {
-        isActive = false;
-      });
+      await mergeSort();
     }
   }
 });
