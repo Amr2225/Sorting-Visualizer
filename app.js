@@ -36,53 +36,6 @@ async function mergeSort() {
     greenHighlight();
   });
 
-  // for (let bar of data) {
-  //   console.log("sorted");
-  //   container.appendChild(bar);
-  // }
-
-  /** 
-   @param arr: int[]
-   @param bars:int[]
-*/
-  // async function sorting(arr) {
-  //   if (arr.length <= 1) {
-  //     return arr;
-  //   }
-
-  //   const mid = Math.floor(arr.length / 2);
-  //   const left = await sorting(arr.slice(0, mid));
-  //   const right = await sorting(arr.slice(mid));
-
-  //   const result = await merge(left, right);
-  //   return result;
-  // }
-
-  // async function merge(left, right) {
-  //   let result = [];
-  //   let leftIndex = 0;
-  //   let rightIndex = 0;
-  //   let finished = false;
-
-  //   while (leftIndex < left.length && rightIndex < right.length) {
-  //     await sleep(DELAY / 3);
-  //     if (+left[leftIndex].dataset.height < +right[rightIndex].dataset.height) {
-  //       result.push(left[leftIndex]);
-  //       left[leftIndex].style.backgroundColor = "red";
-  //       right[rightIndex].style.backgroundColor = "red";
-  //       await sleep(DELAY / 2);
-  //       left[leftIndex].style.backgroundColor = "black";
-  //       right[rightIndex].style.backgroundColor = "black";
-  //       leftIndex++;
-  //     } else {
-  //       result.push(right[rightIndex]);
-  //       rightIndex++;
-  //     }
-  //   }
-
-  //   return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-  // }
-
   async function sorting(arr, l, r) {
     if (l < r) {
       const m = Math.floor(l + (r - l) / 2);
@@ -176,21 +129,6 @@ function bubbleSort() {
     greenHighlight();
   }, (list.length - 7) * DELAY);
 }
-
-// function greenHighlight() {
-//   const nodeList1 = document.querySelectorAll(".array");
-//   const arrs = Array.from(nodeList1);
-//   for (let i = arrs.length - 1; i >= 0; i--) {
-//     setTimeout(() => {
-//       console.log(i);
-//       arrs[i].style.backgroundColor = "green";
-
-//       setTimeout(() => {
-//         arrs[i].style.backgroundColor = "black";
-//       }, DELAY / 3);
-//     }, (arrs.length - 1 - i) * (DELAY / 3));
-//   }
-// }
 
 function greenHighlight() {
   const nodeList1 = document.querySelectorAll(".array");
